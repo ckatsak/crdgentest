@@ -1,0 +1,87 @@
+
+# Gopkg.toml example
+#
+# Refer to https://github.com/golang/dep/blob/master/docs/Gopkg.toml.md
+# for detailed Gopkg.toml documentation.
+#
+# required = ["github.com/user/thing/cmd/thing"]
+# ignored = ["github.com/user/project/pkgX", "bitbucket.org/user/project/pkgA/pkgY"]
+#
+# [[constraint]]
+#   name = "github.com/user/project"
+#   version = "1.0.0"
+#
+# [[constraint]]
+#   name = "github.com/user/project2"
+#   branch = "dev"
+#   source = "github.com/myfork/project2"
+#
+# [[override]]
+#  name = "github.com/x/y"
+#  version = "2.4.0"
+
+required = ["k8s.io/code-generator/cmd/client-gen"]
+
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/golang/glog"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/golang/protobuf"
+
+[[constraint]]
+  branch = "master"
+  name = "golang.org/x/crypto"
+
+[[constraint]]
+  branch = "master"
+  name = "golang.org/x/net"
+
+[[constraint]]
+  name = "google.golang.org/grpc"
+  version = "1.8.2"
+
+[[constraint]]
+  name = "k8s.io/client-go"
+  version = "6.0.0"
+
+# To successfully build client-go, we also need to manually override some of
+# the dependencies based on the revisions found here:
+#
+#	https://github.com/kubernetes/client-go/blob/kubernetes-1.9.2/Godeps/Godeps.json
+#
+# (where <kubernetes-1.9.2> may be substituted with the git tag of the required
+# version).
+#
+# If it still cannot be built, examine the errors and try to re-sync using the
+# revision of the problematic package found in the above Godeps.json ...and
+# good luck with this shit...
+#
+# So, when the project starts (for the first time, only):
+#	$ dep init -v
+# Then modify constraints and overrides in this file, and finally:
+#	$ dep ensure -v
+# Now check if build is OK:
+#	$ go build ./...
+# At later points, to update the dependencies:
+#	$ dep ensure -v -update
+# To just view them, at any point:
+#	$ dep status -v
+
+[[override]]
+  name = "k8s.io/apimachinery"
+  revision = "68f9c3a1feb3140df59c67ced62d3a5df8e6c9c2"
+
+[[override]]
+  name = "k8s.io/api"
+  revision = "006a217681ae70cbacdd66a5e2fca1a61a8ff28e"
+
+[[constraint]]
+  name = "k8s.io/code-generator"
+  branch = "release-1.9"
+
+[[override]]
+  name = "k8s.io/gengo"
+  revision = "b6c426f7730e6d66e6e476a85d1c3eb7633880e0"
