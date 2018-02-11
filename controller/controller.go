@@ -122,8 +122,10 @@ func (dsc *DisttateController) BusinessLogic(key string) error {
 		glog.Warningf("BusinessLogic: object %q does not appear to be in the cache!", key)
 	default:
 		disttate := obj.(*dsv1a1.Disttate)
-		glog.Infof("BusinessLogic: Spec.Name: %q, Spec.RingSize: %d\n%#v",
-			disttate.Spec.Name, disttate.Spec.RingSize, disttate)
+		glog.Infof("BusinessLogic: Spec.Name: %q, Spec.RingSize: %d\ncool name: %q, cool ring size: %d\n%#v",
+			disttate.Spec.Name, disttate.Spec.RingSize,
+			disttate.Spec.GetCoolName(), disttate.Spec.GetCoolRingSize(),
+			disttate)
 	}
 	return nil
 }

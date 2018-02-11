@@ -17,7 +17,15 @@ func (in *Disttate) DeepCopyInto(out *Disttate) {
 	*out = *in
 	out.TypeMeta = in.TypeMeta
 	in.ObjectMeta.DeepCopyInto(&out.ObjectMeta)
-	out.Spec = in.Spec
+	if in.Spec != nil {
+		in, out := &in.Spec, &out.Spec
+		if *in == nil {
+			*out = nil
+		} else {
+			*out = new(DisttateSpec)
+			**out = **in
+		}
+	}
 	return
 }
 
