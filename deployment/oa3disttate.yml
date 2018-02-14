@@ -23,6 +23,13 @@ spec:
         # shortNames allow shorter string to match your resource on the CLI
         shortNames:
           - dst
+    validation:
+        openAPIV3Schema:
+            properties:
+                spec:
+                    properties:
+                        disttateSpec:
+                            type: # TODO
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -32,9 +39,10 @@ metadata:
         app: disttate
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: Role
 metadata:
-    name: disttate-clusterrole
+    name: disttate-role
+    namespace: default
     labels:
         app: disttate
 rules:
@@ -55,8 +63,8 @@ metadata:
         app: disttate
 roleRef:
     apiGroup: rbac.authorization.k8s.io
-    kind: ClusterRole
-    name: disttate-clusterrole
+    kind: Role
+    name: disttate-role
 subjects:
   - kind: ServiceAccount
     name: disttate-sa
@@ -71,7 +79,7 @@ metadata:
         app: disttate
 spec:
     name: 'karagkiozas'
-    ringsize: 60
+    ringsize: 666
     bitset: 'Q0hSSVNUT1VMQVM='  # base64url-encoded string --> []byte --> BitSet
 ---
 apiVersion: apps/v1
