@@ -122,12 +122,24 @@ func (dsc *DisttateController) BusinessLogic(key string) error {
 		glog.Warningf("BusinessLogic: object %q does not appear to be in the cache!", key)
 	default:
 		disttate := obj.(*dsv1a1.Disttate)
-		glog.Infof("BusinessLogic: Spec.Name: %q, Spec.RingSize: %d\ncool name: %q, cool ring size: %d\n%#v",
-			disttate.Spec.Name, disttate.Spec.RingSize,
+		glog.Infof("BusinessLogic: Spec.Name: %q, Spec.RingSize: %d, Spec.BitSet: %#v\ncool name: %q, cool ring size: %d\n%#v",
+			disttate.Spec.Name, disttate.Spec.RingSize, disttate.Spec.Bitset,
 			disttate.Spec.GetCoolName(), disttate.Spec.GetCoolRingSize(),
 			disttate)
+		//dsc.countdown(disttate.Spec.RingSize, key)
 	}
 	return nil
+}
+
+// call it from within DisttateController.BusinessLogic() to see how subsequent
+// updates during the handling of a previous update, get collapsed into the
+// latest version.
+func (dsc *DisttateController) countdown(x int, key string) {
+	for i := x; i > 0; i-- {
+		v, _, _ := dsc.Indexer.GetByKey(key)
+		glog.Infof("%d... (%d)", i, v.(*dsv1a1.Disttate).Spec.GetCoolRingSize())
+		time.Sleep(time.Second)
+	}
 }
 
 func (dsc *DisttateController) handleErr(err error, key interface{}) {

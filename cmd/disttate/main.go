@@ -40,6 +40,9 @@ func main() {
 				Name:      "yolodisttate",
 				Namespace: podNs,
 			},
+			//Spec: &dsv1a1.DisttateSpec{
+			//	Bitset: dsv1a1.NewBitSet(5),
+			//},
 		}); err != nil {
 		glog.Errorf("error warming up the cache: %v", err)
 	}

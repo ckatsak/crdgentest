@@ -72,7 +72,8 @@ metadata:
         app: disttate
 spec:
     name: 'karagkiozas'
-    ringsize: 666
+    ringsize: 60
+    bitset: 'Q0hSSVNUT1VMQVM='  # base64url-encoded string --> []byte --> BitSet
 ---
 apiVersion: apps/v1
 kind: Deployment
