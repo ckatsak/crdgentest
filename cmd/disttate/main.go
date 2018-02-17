@@ -40,7 +40,7 @@ func main() {
 				Name:      "yolodisttate",
 				Namespace: podNs,
 			},
-			//Spec: &dsv1a1.DisttateSpec{
+			//Spec: dsv1a1.DisttateSpec{
 			//	Bitset: dsv1a1.NewBitSet(5),
 			//},
 		}); err != nil {
@@ -49,7 +49,7 @@ func main() {
 
 	// Run the controller until the stop channel is closed.
 	stopChan := make(chan struct{})
-	go dsc.Run(stopChan)
+	go dsc.Run(2, stopChan)
 
 	// Wait for a SIGTERM.
 	signalChan := make(chan os.Signal, 1)

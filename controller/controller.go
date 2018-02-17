@@ -57,7 +57,14 @@ func NewDisttateController(klient dsclientset.Interface, namespace string) *Dist
 		},
 		UpdateFunc: func(old, new interface{}) {
 			glog.Infof("UPDATE caught!")
+			oldDisttate := old.(*dsv1a1.Disttate)
+			newDisttate := new.(*dsv1a1.Disttate)
+			if oldDisttate.ResourceVersion == newDisttate.ResourceVersion {
+				glog.Infof("...just a resync; skipping handling!")
+				return
+			}
 			if key, err := cache.MetaNamespaceKeyFunc(new); err == nil {
+				glog.Infof("...not just a resync; adding to queue!")
 				queue.Add(key)
 			}
 		},
@@ -76,7 +83,7 @@ func NewDisttateController(klient dsclientset.Interface, namespace string) *Dist
 	}
 }
 
-func (dsc *DisttateController) Run(stopChan <-chan struct{}) {
+func (dsc *DisttateController) Run(threadiness int, stopChan <-chan struct{}) {
 	defer runtime.HandleCrash()
 	defer dsc.queue.ShutDown()
 
@@ -88,7 +95,9 @@ func (dsc *DisttateController) Run(stopChan <-chan struct{}) {
 		return
 	}
 
-	go wait.Until(dsc.runWorker, time.Second, stopChan)
+	for i := 0; i < threadiness; i++ {
+		go wait.Until(dsc.runWorker, time.Second, stopChan)
+	}
 
 	<-stopChan
 	glog.Infof("DisttateController: Stopping...")
@@ -126,7 +135,7 @@ func (dsc *DisttateController) BusinessLogic(key string) error {
 			disttate.Spec.Name, disttate.Spec.RingSize, disttate.Spec.Bitset,
 			disttate.Spec.GetCoolName(), disttate.Spec.GetCoolRingSize(),
 			disttate)
-		//dsc.countdown(disttate.Spec.RingSize, key)
+		dsc.countdown(disttate.Spec.RingSize, key)
 	}
 	return nil
 }
